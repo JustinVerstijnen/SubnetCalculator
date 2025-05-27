@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="description" content="This is a simple and fast tool to calculate your networks and subnets the easy way." />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <title>Subnet Calculator - justinverstijnen.nl</title>
 <style>
   /* Basisreset */
@@ -265,7 +266,7 @@
       <option value="32">/32 - 255.255.255.255</option>
     </select>
     
-    <label for="ip-presets">Templates</label>
+    <label for="ip-presets">Templates (optional)</label>
     <select id="ip-presets" aria-label="Choose template">
       <option value="">-- Choose template --</option>
       <option value="10.0.0.0">Private Class A (10.0.0.0)</option>
@@ -277,9 +278,11 @@
       <option value="255.255.255.255">Broadcast (255.255.255.255)</option>
     </select>
 
-    <button type="submit">Calculate subnet</button>
+    <button type="submit" style="width: 100%; margin-top: 20px; background-color: #4CAF50; color: white; padding: 10px; border-radius: 8px; border: none; display: flex; align-items: center;"><i class="fas fa-check-circle" style="margin-right: 10px;"></i>Submit</button>
   </form>
-  <button id="export-btn" style="display: none; width: 100%; margin-top: 20px;">Export to HTML</button>
+  <button id="export-btn" style="display: none; width: 100%; margin-top: 20px; background-color: #92dba5; color: white; padding: 10px; border-radius: 8px; border: none; display: flex; align-items: center;"><i class="fas fa-download" style="margin-right: 10px;"></i>Export to HTML</button>
+  <br>
+  <br>
   <div id="error-msg" class="error" style="display:none;"></div>
   <div id="result" class="result" style="display:none;"></div>
 </div>
