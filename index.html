@@ -90,6 +90,8 @@
     border-radius: 8px;
     padding: 1.5rem 2rem;
     box-shadow: inset 0 0 12px #93c5fdaa;
+    color: white;
+    font-weight: 600;
   }
   .result h2 {
     margin-top: 0;
@@ -102,19 +104,8 @@
     margin: 0.4rem 0;
     font-size: 1.05rem;
   }
-  .logo-link {
-  display: block;
-  text-align: center;
-  margin-bottom: 1rem;
-}
-.logo {
-  max-width: 50px;
-  height: auto;
-  user-select: none;
-  pointer-events: auto;
-}
   .result strong {
-    color: #637b99;
+    color: #e0e7ff;
   }
   /* Responsive */
   @media (max-width: 480px) {
@@ -221,7 +212,6 @@
 
   function getIpType(ipParts) {
     const [a,b,c,d] = ipParts;
-    // Private ranges
     if (a === 10) return 'Private';
     if (a === 172 && b >= 16 && b <= 31) return 'Private';
     if (a === 192 && b === 168) return 'Private';
@@ -230,6 +220,10 @@
     if (a >= 224 && a <= 239) return 'Multicast';
     if (a === 255 && b === 255 && c === 255 && d === 255) return 'Broadcast';
     return 'Public';
+  }
+
+  function formatNumber(num) {
+    return num.toLocaleString('en-US');
   }
 
   function calculateSubnet(ip, cidr) {
@@ -263,10 +257,8 @@
       broadcastNum & 0xff
     ];
 
-    // Hosts calculation
     const hosts = cidr < 31 ? (2 ** (32 - cidr) - 2) : (cidr === 31 ? 2 : 1);
 
-    // Usable host range (if hosts > 0)
     let firstHost = null, lastHost = null;
     if (hosts > 0) {
       firstHost = [
@@ -282,26 +274,17 @@
         broadcastParts[3] -1
       ];
     } else if (cidr === 31) {
-      // /31 has 2 usable IPs (both addresses usable)
       firstHost = networkParts;
       lastHost = broadcastParts;
     } else {
-      // /32 only one IP
       firstHost = networkParts;
       lastHost = networkParts;
     }
 
-    // Wildcard mask (inverse of subnet mask)
     const wildcardParts = maskParts.map(octet => 255 - octet);
-
-    // Binary subnet mask
     const binaryMask = maskParts.map(toBinaryOctet).join('.');
-
-    // IP Class and Type
     const ipClass = getIpClass(ipParts[0]);
     const ipType = getIpType(ipParts);
-
-    // Short notation: network + CIDR
     const shortNotation = networkParts.join('.') + ' /' + cidr;
 
     return {
@@ -309,6 +292,7 @@
       network_address: networkParts.join('.'),
       broadcast_address: broadcastParts.join('.'),
       number_of_hosts: hosts,
+      formatted_hosts: formatNumber(hosts),
       usable_range: `${firstHost.join('.')} - ${lastHost.join('.')}`,
       wildcard_mask: wildcardParts.join('.'),
       binary_subnet_mask: binaryMask,
@@ -333,7 +317,7 @@
     resultDiv.innerHTML = '';
 
     if (!isValidIp(ip)) {
-      errorDiv.textContent = 'Invalid IP address!!';
+      errorDiv.textContent = 'Invalid IP address!';
       errorDiv.style.display = 'block';
       return;
     }
@@ -352,19 +336,19 @@
     }
 
     resultDiv.innerHTML = `
-      <h2>Result of your subnet:</h2>
-      <p><strong>IP address:</strong> ${ip}</p>
-      <p><strong>CIDR network notation:</strong> /${cidr}</p>
-      <p><strong>Subnet mask:</strong> ${result.subnet_mask}</p>
-      <p><strong>Network address:</strong> ${result.network_address}</p>
-      <p><strong>Broadcast address:</strong> ${result.broadcast_address}</p>
-      <p><strong>Maximum hosts:</strong> ${result.number_of_hosts}</p>
+      <h2>Subnet Calculation Result:</h2>
+      <p><strong>IP Address:</strong> ${ip}</p>
+      <p><strong>CIDR Notation:</strong> /${cidr}</p>
+      <p><strong>Subnet Mask:</strong> ${result.subnet_mask}</p>
+      <p><strong>Network Address:</strong> ${result.network_address}</p>
+      <p><strong>Broadcast Address:</strong> ${result.broadcast_address}</p>
+      <p><strong>Maximum Hosts:</strong> ${result.formatted_hosts} (${result.number_of_hosts})</p>
       <p><strong>Usable Host IP Range:</strong> ${result.usable_range}</p>
       <p><strong>Wildcard Mask:</strong> ${result.wildcard_mask}</p>
       <p><strong>Binary Subnet Mask:</strong> ${result.binary_subnet_mask}</p>
       <p><strong>IP Class:</strong> ${result.ip_class}</p>
       <p><strong>IP Type:</strong> ${result.ip_type}</p>
-      <p><strong>Short:</strong> ${result.short_notation}</p>
+      <p><strong>Short Notation:</strong> ${result.short_notation}</p>
     `;
     resultDiv.style.display = 'block';
   });
