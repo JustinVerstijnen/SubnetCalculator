@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="description" content="This is a simple and fast tool to calculate your networks and subnets the easy way." />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <title>Subnet Calculator - justinverstijnen.nl</title>
 <style>
   /* Basisreset */
@@ -62,7 +61,7 @@
     border-color: #8EAFDA;
     box-shadow: 0 0 6px #2563ebaa;
   }
-  button {
+  button.btn {
     grid-column: 1 / -1;
     background: #8EAFDA;
     color: white;
@@ -73,8 +72,12 @@
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
   }
-  button:hover {
+  button.btn:hover {
     background: #637b99;
   }
   /* Error message */
@@ -86,76 +89,75 @@
   }
   /* Result box */
   .result {
-  background: #e0e6f8;
-  border: 1px solid #8EAFDA;
-  border-radius: 8px;
-  padding: 1.5rem 2rem;
-  box-shadow: inset 0 0 12px #8EAFDA88;
-  color: #1e2a4a;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-}
-.result h2 {
-  color: #294172;
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-weight: 700;
-  text-align: center;
-}
-.result table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 1.05rem;
-}
-.result table td:first-child {
-  font-weight: 700;
-  color: #1e40af;
-  padding: 8px 12px 8px 0;
-  width: 45%;
-}
-.result table td:last-child {
-  padding: 8px 0 8px 12px;
-  color: #303136;
-}
-
-/* Groen blok met prefix table */
-#subnet-table {
-  background: #daf5dc; /* zacht groen */
-  border: 1px solid #8bc34a;
-  border-radius: 8px;
-  padding: 1rem 1.5rem;
-  box-shadow: inset 0 0 8px #8bc34a66;
-  color: #3a5f0b;
-  font-weight: 600;
-  max-width: 912px;
-  margin: 0 auto 2rem auto;
-  overflow-x: auto;
-}
-#subnet-table h3 {
-  text-align: center;
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-weight: 700;
-  color: #4caf50;
-}
-#subnet-table table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.95rem;
-}
-#subnet-table th, #subnet-table td {
-  border: 1px solid #8bc34a;
-  padding: 6px 12px;
-  text-align: center;
-}
-#subnet-table th {
-  background-color: #a5d6a7;
-  color: #2e7d32;
-  font-weight: 700;
-}
-#subnet-table tr:nth-child(even) {
-  background-color: #c8e6c9;
-}
+    background: #e0e6f8;
+    border: 1px solid #8EAFDA;
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    box-shadow: inset 0 0 12px #8EAFDA88;
+    color: #1e2a4a;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+  .result h2 {
+    color: #294172;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-align: center;
+  }
+  .result table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.05rem;
+  }
+  .result table td:first-child {
+    font-weight: 700;
+    color: #1e40af;
+    padding: 8px 12px 8px 0;
+    width: 45%;
+  }
+  .result table td:last-child {
+    padding: 8px 0 8px 12px;
+    color: #303136;
+  }
+  /* Groen blok met prefix table */
+  #subnet-table {
+    background: #daf5dc; /* zacht groen */
+    border: 1px solid #8bc34a;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    box-shadow: inset 0 0 8px #8bc34a66;
+    color: #3a5f0b;
+    font-weight: 600;
+    max-width: 912px;
+    margin: 0 auto 2rem auto;
+    overflow-x: auto;
+  }
+  #subnet-table h3 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    color: #4caf50;
+  }
+  #subnet-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  #subnet-table th, #subnet-table td {
+    border: 1px solid #8bc34a;
+    padding: 6px 12px;
+    text-align: center;
+  }
+  #subnet-table th {
+    background-color: #a5d6a7;
+    color: #2e7d32;
+    font-weight: 700;
+  }
+  #subnet-table tr:nth-child(even) {
+    background-color: #c8e6c9;
+  }
   .result p {
     margin: 0.4rem 0;
     font-size: 1.05rem;
@@ -164,67 +166,70 @@
     color: #303136;
   }
   .logo-link {
-  display: block;
-  text-align: center;
-  margin-bottom: 1rem;
-}
-.logo {
-  max-width: 50px;
-  height: auto;
-  user-select: none;
-  pointer-events: auto;
-}
+    display: block;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .logo {
+    max-width: 50px;
+    height: auto;
+    user-select: none;
+    pointer-events: auto;
+  }
+  /* Tooltip styling */
   .tooltip {
-  position: relative;
-  cursor: pointer;
-  color: #1e40af;
-  font-weight: 600;
-}
-
-.tooltip-text {
-  visibility: hidden;
-  position: absolute;
-  left: 0;
-  top: 100%;
-  background-color: #ffffff;
-  color: #333333;
-  border: 1px solid #8EAFDA;
-  border-radius: 8px;
-  padding: 8px;
-  font-size: 0.9rem;
-  width: 250px
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-  opacity: 0;
-  transition: opacity 0.3s ease, visibility 0s 0.3s;
-}
-
-.tooltip:hover .tooltip-text {
-  visibility: visible;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-}
-
-.tooltip-text::before {
-  content: "";
-  position: absolute;
-  left: 10px;
-  top: -6px;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-bottom: 6px solid #8EAFDA;
-}
+    position: relative;
+    cursor: pointer;
+    color: #1e40af;
+    font-weight: 600;
+  }
+  .tooltip-text {
+    visibility: hidden;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #8EAFDA;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 0.9rem;
+    width: 250px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0s 0.3s;
+  }
+  .tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+  .tooltip-text::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: -6px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #8EAFDA;
+  }
   /* Responsive */
   @media (max-width: 480px) {
     form {
       grid-template-columns: 1fr;
       gap: 1rem;
     }
-    button {
+    button.btn {
       grid-column: 1;
     }
   }
 </style>
+<!-- FontAwesome CDN voor icons -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
 </head>
 <body>
 <div class="container">
@@ -236,7 +241,7 @@
     <label for="ip">IP address*</label>
     <input type="text" id="ip" name="ip" placeholder="ex. 192.168.1.0" required />
     
-<label for="cidr">Subnet mask*</label>
+    <label for="cidr">Subnet mask*</label>
     <select id="cidr" name="cidr" required>
       <option value="">-- Choose subnet mask --</option>
       <option value="8">/8 - 255.0.0.0</option>
@@ -266,7 +271,7 @@
       <option value="32">/32 - 255.255.255.255</option>
     </select>
     
-    <label for="ip-presets">Templates (optional)</label>
+    <label for="ip-presets">Templates</label>
     <select id="ip-presets" aria-label="Choose template">
       <option value="">-- Choose template --</option>
       <option value="10.0.0.0">Private Class A (10.0.0.0)</option>
@@ -278,15 +283,15 @@
       <option value="255.255.255.255">Broadcast (255.255.255.255)</option>
     </select>
 
-    <button type="submit" style="width: 100%; margin-top: 20px; background-color: #88B0DC; color: white; padding: 10px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center;">
-  <i class="fas fa-check-circle" style="margin-right: 10px;"></i>Calculate subnet
-</button>
+    <button type="submit" class="btn">
+      <i class="fas fa-check-circle"></i> Calculate subnet
+    </button>
   </form>
-  <button id="export-btn" style="display: none; width: 100%; margin-top: 20px; background-color: #92dba5; color: white; padding: 10px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center;">
-  <i class="fas fa-download" style="margin-right: 10px;"></i>Export to HTML
-</button>
-  <br>
-  <br>
+
+  <button id="export-btn" class="btn" style="display: none; margin-top: 20px;">
+    <i class="fas fa-download"></i> Export to HTML
+  </button>
+
   <div id="error-msg" class="error" style="display:none;"></div>
   <div id="result" class="result" style="display:none;"></div>
 </div>
@@ -415,41 +420,8 @@
     };
   }
 
-  // Function to handle the export to HTML
-  document.getElementById('export-btn').addEventListener('click', function() {
-    const resultContent = document.getElementById('result').innerHTML;
-    
-    const header = `
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Subnet Calculation Result</title>
-        <style>
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f9fafb; margin: 0; padding: 2rem; color: #2e3440; }
-            h1 { text-align: center; font-weight: 700; margin-bottom: 2rem; color: #1f2937; }
-            .container { max-width: 912px; margin: 0 auto; background: white; border-radius: 10px; padding: 2rem 2.5rem; box-shadow: 0 8px 24px rgb(100 116 139 / 0.1); }
-            .result { background: #e0e6f8; border: 1px solid #8EAFDA; border-radius: 8px; padding: 1.5rem 2rem; box-shadow: inset 0 0 12px #8EAFDA88; color: #1e2a4a; font-weight: 600; }
-            table { width: 100%; border-collapse: collapse; font-size: 1.05rem; }
-            table td { padding: 8px; color: #303136; }
-            table td:first-child { font-weight: 700; color: #1e40af; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>Subnet Calculation Result</h1>
-            <div class="result">${resultContent}</div>
-        </div>
-    </body>
-    </html>
-    `;
-    
-    const blob = new Blob([header], { type: 'text/html' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'subnet-calculation-result.html'; 
-    link.click();
-  });
+  const exportBtn = document.getElementById('export-btn');
+  const resultDiv = document.getElementById('result');
 
   document.getElementById('subnet-form').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -458,10 +430,10 @@
     const cidr = document.getElementById('cidr').value;
 
     const errorDiv = document.getElementById('error-msg');
-    const resultDiv = document.getElementById('result');
 
     errorDiv.style.display = 'none';
     resultDiv.style.display = 'none';
+    exportBtn.style.display = 'none';
     errorDiv.textContent = '';
     resultDiv.innerHTML = '';
 
@@ -487,77 +459,123 @@
     resultDiv.innerHTML = `
       <h2>Subnet Calculation Result:</h2>
       <table>
-        <tr><td>CIDR notation:</td><td>${result.short_notation}</td></tr>
-        <tr><td>IP Address:</td><td>${ip}</td></tr>
-        <tr><td>Subnet Mask:</td><td>${result.subnet_mask}</td></tr>
-        <tr><td>CIDR Prefix:</td><td>/${cidr}</td></tr>
-        <tr><td>Maximum Possible Hosts:</td><td>${result.formatted_hosts}</td></tr>
-        <tr><td>Usable Address Range:</td><td>${result.usable_range}</td></tr>
-        <tr><td>Network Address:</td><td>${result.network_address}</td></tr>
-        <tr><td>Broadcast Address:</td><td>${result.broadcast_address}</td></tr>
-        <tr><td>IP Class:</td><td>${result.ip_class}</td></tr>
-        <tr><td>IP Type:</td><td>${result.ip_type}</td></tr>
-        <tr><td>Wildcard Mask:</td><td>${result.wildcard_mask}</td></tr>
-        <tr><td>Binary Subnet Mask:</td><td>${result.binary_subnet_mask}</td></tr>
+        <tr><td><span class="tooltip">CIDR notation<span class="tooltip-text">CIDR (Classless Inter-Domain Routing) notation is used to specify IP addresses and their associated subnet masks. It combines the IP address and the prefix length into a single identifier (e.g., 10.0.0.0/8).</span></span>:</td><td>${result.short_notation}</td></tr>
+        <tr><td><span class="tooltip">IP Address<span class="tooltip-text">An IP address is a unique identifier for a device on a network, enabling communication between devices.</span></span>:</td><td>${ip}</td></tr>
+        <tr><td><span class="tooltip">Subnet Mask<span class="tooltip-text">A subnet mask is used to divide an IP address into network and host portions, determining which addresses are in the same subnet.</span></span>:</td><td>${result.subnet_mask}</td></tr>
+        <tr><td><span class="tooltip">CIDR Prefix<span class="tooltip-text">The CIDR prefix indicates the number of bits used to identify the network part of an IP address. For example, /24 means the first 24 bits are used for the network.</span></span>:</td><td>/${cidr}</td></tr>
+        <tr><td><span class="tooltip">Maximum Possible Hosts<span class="tooltip-text">This is the maximum number of hosts that can be assigned within the subnet, based on the subnet mask. It excludes the network and broadcast addresses.</span></span>:</td><td>${result.formatted_hosts}</td></tr>
+        <tr><td><span class="tooltip">Usable Address Range<span class="tooltip-text">The range of IP addresses available for devices within the subnet, excluding the network and broadcast addresses.</span></span>:</td><td>${result.usable_range}</td></tr>
+        <tr><td><span class="tooltip">Network Address<span class="tooltip-text">The network address is the first address in a subnet and is used to identify the subnet itself.</span></span>:</td><td>${result.network_address}</td></tr>
+        <tr><td><span class="tooltip">Broadcast Address<span class="tooltip-text">The broadcast address is used to send data to all devices within a subnet. It is the last address in the subnet.</span></span>:</td><td>${result.broadcast_address}</td></tr>
+        <tr><td><span class="tooltip">IP Class<span class="tooltip-text">IP classes (A, B, C, D, E) categorize IP address ranges for various purposes, such as private networks or public internet addressing.</span></span>:</td><td>${result.ip_class}</td></tr>
+        <tr><td><span class="tooltip">IP Type<span class="tooltip-text">The IP Type indicates whether the address is private, public, loopback, or multicast.</span></span>:</td><td>${result.ip_type}</td></tr>
+        <tr><td><span class="tooltip">Wildcard Mask<span class="tooltip-text">The wildcard mask is the inverse of the subnet mask, used in routing protocols like OSPF to define which bits are ignored when routing.</span></span>:</td><td>${result.wildcard_mask}</td></tr>
+        <tr><td><span class="tooltip">Binary Subnet Mask<span class="tooltip-text">The binary subnet mask represents the subnet mask in binary form, making it easier to understand the network structure.</span></span>:</td><td>${result.binary_subnet_mask}</td></tr>
       </table>
     `;
 
-    const subnetTableHtml = `
-    <div id="subnet-table">
-      <h3>Subnets and sizes (for reference)</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Prefix</th>
-            <th>Subnet mask</th>
-            <th>Usable addresses</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>Supernets (ISPs)</strong></td><td></td><td></td></tr>
-          <tr><td>/0</td><td>0.0.0.0</td><td>Used as wildcard</td></tr>
-          <tr><td>/1</td><td>128.0.0.0</td><td>2,147,483,646</td></tr>
-          <tr><td>/2</td><td>192.0.0.0</td><td>1,073,741,822</td></tr>
-          <tr><td>/3</td><td>224.0.0.0</td><td>536,870,910</td></tr>
-          <tr><td>/4</td><td>240.0.0.0</td><td>268,435,454</td></tr>
-          <tr><td>/5</td><td>248.0.0.0</td><td>134,217,726</td></tr>
-          <tr><td>/6</td><td>252.0.0.0</td><td>67,108,862</td></tr>
-          <tr><td>/7</td><td>254.0.0.0</td><td>33,554,430</td></tr>
-          <tr><td><strong>Class A networks</strong></td><td></td><td></td></tr>
-          <tr><td>/8</td><td>255.0.0.0</td><td>16,777,214</td></tr>
-          <tr><td>/9</td><td>255.128.0.0</td><td>8,388,606</td></tr>
-          <tr><td>/10</td><td>255.192.0.0</td><td>4,194,302</td></tr>
-          <tr><td>/11</td><td>255.224.0.0</td><td>2,097,150</td></tr>
-          <tr><td>/12</td><td>255.240.0.0</td><td>1,048,574</td></tr>
-          <tr><td>/13</td><td>255.248.0.0</td><td>524,286</td></tr>
-          <tr><td>/14</td><td>255.252.0.0</td><td>262,142</td></tr>
-          <tr><td>/15</td><td>255.254.0.0</td><td>131,070</td></tr>
-          <tr><td><strong>Class B networks</strong></td><td></td><td></td></tr>
-          <tr><td>/16</td><td>255.255.0.0</td><td>65,534</td></tr>
-          <tr><td>/17</td><td>255.255.128.0</td><td>32,766</td></tr>
-          <tr><td>/18</td><td>255.255.192.0</td><td>16,382</td></tr>
-          <tr><td>/19</td><td>255.255.224.0</td><td>8,190</td></tr>
-          <tr><td>/20</td><td>255.255.240.0</td><td>4,094</td></tr>
-          <tr><td>/21</td><td>255.255.248.0</td><td>2,046</td></tr>
-          <tr><td>/22</td><td>255.255.252.0</td><td>1,022</td></tr>
-          <tr><td>/23</td><td>255.255.254.0</td><td>510</td></tr>
-          <tr><td><strong>Class C networks</strong></td><td></td><td></td></tr>
-          <tr><td>/24</td><td>255.255.255.0</td><td>254</td></tr>
-          <tr><td>/25</td><td>255.255.255.128</td><td>126</td></tr>
-          <tr><td>/26</td><td>255.255.255.192</td><td>62</td></tr>
-          <tr><td>/27</td><td>255.255.255.224</td><td>30</td></tr>
-          <tr><td>/28</td><td>255.255.255.240</td><td>14</td></tr>
-          <tr><td>/29</td><td>255.255.255.248</td><td>6</td></tr>
-          <tr><td>/30</td><td>255.255.255.252</td><td>2</td></tr>
-          <tr><td>/31</td><td>255.255.255.254</td><td>0</td></tr>
-          <tr><td>/32</td><td>255.255.255.255</td><td>0</td></tr>
-        </tbody>
-      </table>
-      <p>Comma's used in Usable addresses to not be confused with IP addresses ;)</p>
-    </div>
-  `;
-    document.getElementById('export-btn').style.display = 'inline-block';
+    // Insert subnet reference table if not already present
+    if (!document.getElementById('subnet-table')) {
+      const subnetTableHtml = `
+        <div id="subnet-table">
+          <h3>Subnets and sizes (for reference)</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Prefix</th>
+                <th>Subnet mask</th>
+                <th>Usable addresses</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Supernets (ISPs)</strong></td><td></td><td></td></tr>
+              <tr><td>/0</td><td>0.0.0.0</td><td>Used as wildcard</td></tr>
+              <tr><td>/1</td><td>128.0.0.0</td><td>2,147,483,646</td></tr>
+              <tr><td>/2</td><td>192.0.0.0</td><td>1,073,741,822</td></tr>
+              <tr><td>/3</td><td>224.0.0.0</td><td>536,870,910</td></tr>
+              <tr><td>/4</td><td>240.0.0.0</td><td>268,435,454</td></tr>
+              <tr><td>/5</td><td>248.0.0.0</td><td>134,217,726</td></tr>
+              <tr><td>/6</td><td>252.0.0.0</td><td>67,108,862</td></tr>
+              <tr><td>/7</td><td>254.0.0.0</td><td>33,554,430</td></tr>
+              <tr><td><strong>Class A networks</strong></td><td></td><td></td></tr>
+              <tr><td>/8</td><td>255.0.0.0</td><td>16,777,214</td></tr>
+              <tr><td>/9</td><td>255.128.0.0</td><td>8,388,606</td></tr>
+              <tr><td>/10</td><td>255.192.0.0</td><td>4,194,302</td></tr>
+              <tr><td>/11</td><td>255.224.0.0</td><td>2,097,150</td></tr>
+              <tr><td>/12</td><td>255.240.0.0</td><td>1,048,574</td></tr>
+              <tr><td>/13</td><td>255.248.0.0</td><td>524,286</td></tr>
+              <tr><td>/14</td><td>255.252.0.0</td><td>262,142</td></tr>
+              <tr><td>/15</td><td>255.254.0.0</td><td>131,070</td></tr>
+              <tr><td><strong>Class B networks</strong></td><td></td><td></td></tr>
+              <tr><td>/16</td><td>255.255.0.0</td><td>65,534</td></tr>
+              <tr><td>/17</td><td>255.255.128.0</td><td>32,766</td></tr>
+              <tr><td>/18</td><td>255.255.192.0</td><td>16,382</td></tr>
+              <tr><td>/19</td><td>255.255.224.0</td><td>8,190</td></tr>
+              <tr><td>/20</td><td>255.255.240.0</td><td>4,094</td></tr>
+              <tr><td>/21</td><td>255.255.248.0</td><td>2,046</td></tr>
+              <tr><td>/22</td><td>255.255.252.0</td><td>1,022</td></tr>
+              <tr><td>/23</td><td>255.255.254.0</td><td>510</td></tr>
+              <tr><td><strong>Class C networks</strong></td><td></td><td></td></tr>
+              <tr><td>/24</td><td>255.255.255.0</td><td>254</td></tr>
+              <tr><td>/25</td><td>255.255.255.128</td><td>126</td></tr>
+              <tr><td>/26</td><td>255.255.255.192</td><td>62</td></tr>
+              <tr><td>/27</td><td>255.255.255.224</td><td>30</td></tr>
+              <tr><td>/28</td><td>255.255.255.240</td><td>14</td></tr>
+              <tr><td>/29</td><td>255.255.255.248</td><td>6</td></tr>
+              <tr><td>/30</td><td>255.255.255.252</td><td>2</td></tr>
+              <tr><td>/31</td><td>255.255.255.254</td><td>0</td></tr>
+              <tr><td>/32</td><td>255.255.255.255</td><td>0</td></tr>
+            </tbody>
+          </table>
+          <p>Comma's used in Usable addresses to not be confused with IP addresses ;)</p>
+        </div>
+      `;
+      const container = document.querySelector('.container');
+      container.insertAdjacentHTML('beforeend', subnetTableHtml);
+    }
+
+    // Show result and export button
     resultDiv.style.display = 'block';
+    exportBtn.style.display = 'flex';
+  });
+
+  exportBtn.addEventListener('click', () => {
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+      <meta charset="UTF-8" />
+      <title>Subnet Calculation Result</title>
+      <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 2rem; background: #f9fafb; color: #2e3440; }
+        h2 { text-align: center; color: #294172; font-weight: 700; }
+        table { width: 100%; border-collapse: collapse; font-size: 1.05rem; margin-bottom: 2rem; }
+        td:first-child { font-weight: 700; color: #1e40af; padding: 8px 12px 8px 0; width: 45%; }
+        td:last-child { padding: 8px 0 8px 12px; color: #303136; }
+        #subnet-table { background: #daf5dc; border: 1px solid #8bc34a; border-radius: 8px; padding: 1rem 1.5rem; box-shadow: inset 0 0 8px #8bc34a66; color: #3a5f0b; font-weight: 600; max-width: 912px; margin: 0 auto 2rem auto; overflow-x: auto; }
+        #subnet-table h3 { text-align: center; margin-top: 0; margin-bottom: 1rem; font-weight: 700; color: #4caf50; }
+        #subnet-table table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+        #subnet-table th, #subnet-table td { border: 1px solid #8bc34a; padding: 6px 12px; text-align: center; }
+        #subnet-table th { background-color: #a5d6a7; color: #2e7d32; font-weight: 700; }
+        #subnet-table tr:nth-child(even) { background-color: #c8e6c9; }
+      </style>
+      </head>
+      <body>
+      ${resultDiv.innerHTML}
+      ${document.getElementById('subnet-table')?.outerHTML || ''}
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob([htmlContent], {type: "text/html"});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'subnet-result.html';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   });
 </script>
 </body>
