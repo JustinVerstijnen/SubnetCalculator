@@ -19,20 +19,16 @@ def calculate_subnet(ip, cidr):
     except:
         return None
 
-    # Bereken het subnetmasker
     mask = (0xffffffff >> (32 - cidr)) << (32 - cidr)
     mask_parts = [(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff]
 
-    # Bereken netwerkadres
     ip_num = (ip_parts[0] << 24) + (ip_parts[1] << 16) + (ip_parts[2] << 8) + ip_parts[3]
     network_num = ip_num & mask
     network_parts = [(network_num >> 24) & 0xff, (network_num >> 16) & 0xff, (network_num >> 8) & 0xff, network_num & 0xff]
 
-    # Bereken broadcastadres
     broadcast_num = network_num | (~mask & 0xffffffff)
     broadcast_parts = [(broadcast_num >> 24) & 0xff, (broadcast_num >> 16) & 0xff, (broadcast_num >> 8) & 0xff, broadcast_num & 0xff]
 
-    # Aantal hosts
     hosts = 2**(32 - cidr) - 2 if cidr < 31 else (1 if cidr == 31 else 0)
 
     return {
@@ -43,29 +39,34 @@ def calculate_subnet(ip, cidr):
     }
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
-    ip = req.params.get('ip')
-    cidr = req.params.get('cidr')
+    try:
+        ip = req.params.get('ip')
+        cidr = req.params.get('cidr')
 
-    if not ip or not cidr:
-        return func.HttpResponse(html_form, mimetype="text/html")
+        if not ip or not cidr:
+            return func.HttpResponse(html_form, mimetype="text/html")
 
-    result = calculate_subnet(ip, cidr)
-    if not result:
-        return func.HttpResponse(html_form + "<p style='color:red;'>Invalid input. Please enter a valid IPv4 address and CIDR (0-32).</p>", mimetype="text/html")
+        result = calculate_subnet(ip, cidr)
+        if not result:
+            return func.HttpResponse(html_form + "<p style='color:red; text-align:center;'>Ongeldige invoer. Vul een geldig IPv4-adres en CIDR (0-32) in.</p>", mimetype="text/html")
 
-    response_html = html_form + f"""
-    <div class="result">
-        <h2>Subnet Calculation Result</h2>
-        <p><strong>IP Address:</strong> {ip}</p>
-        <p><strong>CIDR:</strong> /{cidr}</p>
-        <p><strong>Subnet Mask:</strong> {result['subnet_mask']}</p>
-        <p><strong>Network Address:</strong> {result['network_address']}</p>
-        <p><strong>Broadcast Address:</strong> {result['broadcast_address']}</p>
-        <p><strong>Number of Hosts:</strong> {result['number_of_hosts']}</p>
-    </div>
-    """
+        response_html = html_form + f"""
+        <div class="result">
+            <h2>Subnet Berekening Resultaat</h2>
+            <p><strong>IP-adres:</strong> {ip}</p>
+            <p><strong>CIDR:</strong> /{cidr}</p>
+            <p><strong>Subnet Masker:</strong> {result['subnet_mask']}</p>
+            <p><strong>Netwerkadres:</strong> {result['network_address']}</p>
+            <p><strong>Broadcastadres:</strong> {result['broadcast_address']}</p>
+            <p><strong>Aantal Hosts:</strong> {result['number_of_hosts']}</p>
+        </div>
+        """
 
-    return func.HttpResponse(response_html, mimetype="text/html")
+        return func.HttpResponse(response_html, mimetype="text/html")
+    except Exception as e:
+        # Return een simpele foutmelding als iets misgaat
+        return func.HttpResponse(f"<h1>Er is een fout opgetreden:</h1><pre>{str(e)}</pre>", status_code=500, mimetype="text/html")
+
 
 html_form = """
 <!DOCTYPE html>
