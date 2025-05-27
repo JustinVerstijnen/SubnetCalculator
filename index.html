@@ -85,21 +85,76 @@
   }
   /* Result box */
   .result {
-    background: ##b4c5db;
-    border: 1px solid #92DBA5;
-    border-radius: 8px;
-    padding: 1.5rem 2rem;
-    box-shadow: inset 0 0 12px #393c40aa;
-    color: black;
-    font-weight: 600;
-  }
-  .result h2 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    color: #393c40;
-    font-weight: 700;
-    text-align: center;
-  }
+  background: #e0e6f8;
+  border: 1px solid #8EAFDA;
+  border-radius: 8px;
+  padding: 1.5rem 2rem;
+  box-shadow: inset 0 0 12px #8EAFDA88;
+  color: #1e2a4a;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+.result h2 {
+  color: #294172;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-align: center;
+}
+.result table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.05rem;
+}
+.result table td:first-child {
+  font-weight: 700;
+  color: #1e40af;
+  padding: 8px 12px 8px 0;
+  width: 45%;
+}
+.result table td:last-child {
+  padding: 8px 0 8px 12px;
+  color: #303136;
+}
+
+/* Groen blok met prefix table */
+#subnet-table {
+  background: #daf5dc; /* zacht groen */
+  border: 1px solid #8bc34a;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  box-shadow: inset 0 0 8px #8bc34a66;
+  color: #3a5f0b;
+  font-weight: 600;
+  max-width: 912px;
+  margin: 0 auto 2rem auto;
+  overflow-x: auto;
+}
+#subnet-table h3 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  color: #4caf50;
+}
+#subnet-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+#subnet-table th, #subnet-table td {
+  border: 1px solid #8bc34a;
+  padding: 6px 12px;
+  text-align: center;
+}
+#subnet-table th {
+  background-color: #a5d6a7;
+  color: #2e7d32;
+  font-weight: 700;
+}
+#subnet-table tr:nth-child(even) {
+  background-color: #c8e6c9;
+}
   .result p {
     margin: 0.4rem 0;
     font-size: 1.05rem;
@@ -347,20 +402,82 @@
     }
 
     resultDiv.innerHTML = `
-      <h2>Subnet Calculation Result:</h2>
-      <p><strong>IP Address:</strong> ${ip}</p>
-      <p><strong>CIDR Notation:</strong> /${cidr}</p>
-      <p><strong>Subnet Mask:</strong> ${result.subnet_mask}</p>
-      <p><strong>Network Address:</strong> ${result.network_address}</p>
-      <p><strong>Broadcast Address:</strong> ${result.broadcast_address}</p>
-      <p><strong>Maximum Hosts:</strong> ${result.formatted_hosts} (${result.number_of_hosts})</p>
-      <p><strong>Usable Host IP Range:</strong> ${result.usable_range}</p>
-      <p><strong>Wildcard Mask:</strong> ${result.wildcard_mask}</p>
-      <p><strong>Binary Subnet Mask:</strong> ${result.binary_subnet_mask}</p>
-      <p><strong>IP Class:</strong> ${result.ip_class}</p>
-      <p><strong>IP Type:</strong> ${result.ip_type}</p>
-      <p><strong>Short Notation:</strong> ${result.short_notation}</p>
-    `;
+  <h2>Subnet Calculation Result:</h2>
+  <table>
+    <tr><td>IP Address:</td><td>${ip}</td></tr>
+    <tr><td>CIDR Notation:</td><td>/${cidr}</td></tr>
+    <tr><td>Subnet Mask:</td><td>${result.subnet_mask}</td></tr>
+    <tr><td>Network Address:</td><td>${result.network_address}</td></tr>
+    <tr><td>Broadcast Address:</td><td>${result.broadcast_address}</td></tr>
+    <tr><td>Maximum Hosts:</td><td>${result.formatted_hosts} (${result.number_of_hosts})</td></tr>
+    <tr><td>Usable Host IP Range:</td><td>${result.usable_range}</td></tr>
+    <tr><td>Wildcard Mask:</td><td>${result.wildcard_mask}</td></tr>
+    <tr><td>Binary Subnet Mask:</td><td>${result.binary_subnet_mask}</td></tr>
+    <tr><td>IP Class:</td><td>${result.ip_class}</td></tr>
+    <tr><td>IP Type:</td><td>${result.ip_type}</td></tr>
+    <tr><td>Short Notation:</td><td>${result.short_notation}</td></tr>
+  </table>
+`;
+
+// Voeg het extra groen blok met de prefix-tabel toe, direct onder het resultaat
+const subnetTableHtml = `
+  <div id="subnet-table">
+    <h3>Subnet Prefix Table</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Prefix Size</th>
+          <th>Network Mask</th>
+          <th>Usable Hosts per Subnet</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>/1</td><td>128.0.0.0</td><td>2,147,483,646</td></tr>
+        <tr><td>/2</td><td>192.0.0.0</td><td>1,073,741,822</td></tr>
+        <tr><td>/3</td><td>224.0.0.0</td><td>536,870,910</td></tr>
+        <tr><td>/4</td><td>240.0.0.0</td><td>268,435,454</td></tr>
+        <tr><td>/5</td><td>248.0.0.0</td><td>134,217,726</td></tr>
+        <tr><td>/6</td><td>252.0.0.0</td><td>67,108,862</td></tr>
+        <tr><td>/7</td><td>254.0.0.0</td><td>33,554,430</td></tr>
+        <tr><td>Class A</td><td></td><td></td></tr>
+        <tr><td>/8</td><td>255.0.0.0</td><td>16,777,214</td></tr>
+        <tr><td>/9</td><td>255.128.0.0</td><td>8,388,606</td></tr>
+        <tr><td>/10</td><td>255.192.0.0</td><td>4,194,302</td></tr>
+        <tr><td>/11</td><td>255.224.0.0</td><td>2,097,150</td></tr>
+        <tr><td>/12</td><td>255.240.0.0</td><td>1,048,574</td></tr>
+        <tr><td>/13</td><td>255.248.0.0</td><td>524,286</td></tr>
+        <tr><td>/14</td><td>255.252.0.0</td><td>262,142</td></tr>
+        <tr><td>/15</td><td>255.254.0.0</td><td>131,070</td></tr>
+        <tr><td>Class B</td><td></td><td></td></tr>
+        <tr><td>/16</td><td>255.255.0.0</td><td>65,534</td></tr>
+        <tr><td>/17</td><td>255.255.128.0</td><td>32,766</td></tr>
+        <tr><td>/18</td><td>255.255.192.0</td><td>16,382</td></tr>
+        <tr><td>/19</td><td>255.255.224.0</td><td>8,190</td></tr>
+        <tr><td>/20</td><td>255.255.240.0</td><td>4,094</td></tr>
+        <tr><td>/21</td><td>255.255.248.0</td><td>2,046</td></tr>
+        <tr><td>/22</td><td>255.255.252.0</td><td>1,022</td></tr>
+        <tr><td>/23</td><td>255.255.254.0</td><td>510</td></tr>
+        <tr><td>Class C</td><td></td><td></td></tr>
+        <tr><td>/24</td><td>255.255.255.0</td><td>254</td></tr>
+        <tr><td>/25</td><td>255.255.255.128</td><td>126</td></tr>
+        <tr><td>/26</td><td>255.255.255.192</td><td>62</td></tr>
+        <tr><td>/27</td><td>255.255.255.224</td><td>30</td></tr>
+        <tr><td>/28</td><td>255.255.255.240</td><td>14</td></tr>
+        <tr><td>/29</td><td>255.255.255.248</td><td>6</td></tr>
+        <tr><td>/30</td><td>255.255.255.252</td><td>2</td></tr>
+        <tr><td>/31</td><td>255.255.255.254</td><td>0</td></tr>
+        <tr><td>/32</td><td>255.255.255.255</td><td>0</td></tr>
+      </tbody>
+    </table>
+  </div>
+`;
+
+if (!document.getElementById('subnet-table')) {
+  const container = document.querySelector('.container');
+  const existingTable = document.getElementById('subnet-table');
+  if (existingTable) existingTable.remove();
+  container.insertAdjacentHTML('beforeend', subnetTableHtml);
+}
     resultDiv.style.display = 'block';
   });
 </script>
