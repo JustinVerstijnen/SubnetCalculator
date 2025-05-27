@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>IPv4 Subnet Calculator</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f1f5f9;
+        color: #334155;
+        margin: 2em;
+    }
+    h1 {
+        text-align: center;
+        color: #1e293b;
+    }
+    form {
+        background-color: #e2e8f0;
+        padding: 1.5em;
+        border-radius: 8px;
+        max-width: 400px;
+        margin: 0 auto 2em auto;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    label {
+        display: block;
+        margin-bottom: 0.5em;
+        font-weight: bold;
+        color: #0f172a;
+    }
+    input[type="text"], input[type="number"] {
+        width: 100%;
+        padding: 0.5em;
+        border: 1px solid #94a3b8;
+        border-radius: 4px;
+        margin-bottom: 1em;
+        font-size: 1em;
+    }
+    button {
+        background-color: #22c55e;
+        color: white;
+        border: none;
+        padding: 0.75em 1.5em;
+        font-size: 1em;
+        border-radius: 6px;
+        cursor: pointer;
+        width: 100%;
+    }
+    button:hover {
+        background-color: #16a34a;
+    }
+    .result {
+        background-color: #dcfce7;
+        border: 1px solid #22c55e;
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 1em 1.5em;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(34, 197, 94, 0.25);
+    }
+    .error {
+        color: #dc2626;
+        max-width: 400px;
+        margin: 0 auto 1em auto;
+        font-weight: bold;
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+<h1>IPv4 Subnet Calculator</h1>
+
+<form id="subnet-form">
+    <label for="ip">IP-adres:</label>
+    <input type="text" id="ip" name="ip" placeholder="bijv. 192.168.1.0" required />
+    <label for="cidr">CIDR (0-32):</label>
+    <input type="number" id="cidr" name="cidr" min="0" max="32" placeholder="bijv. 24" required />
+    <button type="submit">Bereken</button>
+</form>
+
+<div id="error-msg" class="error" style="display:none;"></div>
+<div id="result" class="result" style="display:none;"></div>
+
+<script>
+document.getElementById('subnet-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const ip = document.getElementById('ip').value.trim();
+    const cidr = document.getElementById('cidr').value.trim();
+
+    const errorDiv = document.getElementById('error-msg');
+    const resultDiv = document.getElementById('result');
+    errorDiv.style.display = 'none';
+    resultDiv.style.display = 'none';
+    errorDiv.textContent = '';
+    resultDiv.innerHTML = '';
+
+    try {
+        const response = await fetch(`/api/calculate?ip=${encodeURIComponent(ip)}&cidr=${encodeURIComponent(cidr)}`);
+        if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(errText || 'Er is een fout opgetreden');
+        }
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
+        resultDiv.innerHTML = `
+            <h2>Subnet Berekening Resultaat</h2>
+            <p><strong>IP-adres:</strong> ${ip}</p>
+            <p><strong>CIDR:</strong> /${cidr}</p>
+            <p><strong>Subnet Masker:</strong> ${data.subnet_mask}</p>
+            <p><strong>Netwerkadres:</strong> ${data.network_address}</p>
+            <p><strong>Broadcastadres:</strong> ${data.broadcast_address}</p>
+            <p><strong>Aantal Hosts:</strong> ${data.number_of_hosts}</p>
+        `;
+        resultDiv.style.display = 'block';
+
+    } catch (error) {
+        errorDiv.textContent = error.message;
+        errorDiv.style.display = 'block';
+    }
+});
+</script>
+</body>
+</html>
