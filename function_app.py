@@ -65,74 +65,26 @@ HTML = """
 </body>
 </html>
 """
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    ipv4_result = None
-    ipv6_result = None
-    ipv4_address = ipv4_subnet = ipv6_address = ipv6_prefix = None
-
-    if request.method == 'POST':
-        action = request.form.get('action')
-        if action == 'ipv4':
-            ipv4_address = request.form.get('ipv4_address')
-            ipv4_subnet = request.form.get('ipv4_subnet')
-
-            try:
-                if '/' in ipv4_subnet:
-                    network = ipaddress.IPv4Network(f"{ipv4_address}{ipv4_subnet}", strict=False)
-                else:
-                    network = ipaddress.IPv4Network(f"{ipv4_address}/{ipv4_subnet}", strict=False)
-                ipv4_result = network
-            except Exception as e:
-                ipv4_result = f"Error: {e}"
-
-        elif action == 'ipv6':
-            ipv6_address = request.form.get('ipv6_address')
-            ipv6_prefix = request.form.get('ipv6_prefix')
-
-            try:
-                if not ipv6_prefix.startswith('/'):
-                    ipv6_prefix = '/' + ipv6_prefix
-                network = ipaddress.IPv6Network(f"{ipv6_address}{ipv6_prefix}", strict=False)
-                ipv6_result = network
-            except Exception as e:
-                ipv6_result = f"Error: {e}"
-
-    return render_template_string(HTML,
-                                  ipv4_result=ipv4_result,
-                                  ipv6_result=ipv6_result,
-                                  ipv4_address=ipv4_address,
-                                  ipv4_subnet=ipv4_subnet,
-                                  ipv6_address=ipv6_address,
-                                  ipv6_prefix=ipv6_prefix)
-
+    # ... zelfde functie als eerder ...
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
-    # Converteer Azure Functions request naar WSGI environ
     environ = req.get_wsgi_environ()
-    response_body = []
+    response_status = None
+    response_headers = []
 
     def start_response(status, headers):
-        nonlocal response_body
-        # status is string zoals '200 OK'
-        # headers is list van tuples
-        response_body = []
-        global response_status
-        global response_headers
+        nonlocal response_status, response_headers
         response_status = status
         response_headers = headers
-        return response_body.append
+        # WSGI expects a callable to write data, maar we bufferen niets hier
+        return lambda x: None
 
     result = app.wsgi_app(environ, start_response)
-    body = b''.join(response_body) + b''.join(result)
+    body = b''.join(result)
 
-    # Pak statuscode uit string, bv '200 OK' -> 200
     status_code = int(response_status.split()[0])
-
-    # Zet headers om naar dict
-    headers = {}
-    for k, v in response_headers:
-        headers[k] = v
+    headers = {k: v for k, v in response_headers}
 
     return func.HttpResponse(body, status_code=status_code, headers=headers)
