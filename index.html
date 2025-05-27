@@ -351,7 +351,7 @@
     const binaryMask = maskParts.map(toBinaryOctet).join('.');
     const ipClass = getIpClass(ipParts[0]);
     const ipType = getIpType(ipParts);
-    const shortNotation = networkParts.join('.') + ' /' + cidr;
+    const shortNotation = networkParts.join('.') + '/' + cidr;
 
     return {
       subnet_mask: maskParts.join('.'),
@@ -404,34 +404,35 @@
     resultDiv.innerHTML = `
   <h2>Subnet Calculation Result:</h2>
   <table>
+    <tr><td>CIDR notation:</td><td>${result.short_notation}</td></tr>
     <tr><td>IP Address:</td><td>${ip}</td></tr>
-    <tr><td>CIDR Notation:</td><td>/${cidr}</td></tr>
     <tr><td>Subnet Mask:</td><td>${result.subnet_mask}</td></tr>
+    <tr><td>CIDR Prefix:</td><td>/${cidr}</td></tr>
+    <tr><td>Maximum Possible Hosts:</td><td>${result.formatted_hosts}</td></tr>
+    <tr><td>Usable Address Range:</td><td>${result.usable_range}</td></tr>
     <tr><td>Network Address:</td><td>${result.network_address}</td></tr>
     <tr><td>Broadcast Address:</td><td>${result.broadcast_address}</td></tr>
-    <tr><td>Maximum Hosts:</td><td>${result.formatted_hosts} (${result.number_of_hosts})</td></tr>
-    <tr><td>Usable Host IP Range:</td><td>${result.usable_range}</td></tr>
-    <tr><td>Wildcard Mask:</td><td>${result.wildcard_mask}</td></tr>
-    <tr><td>Binary Subnet Mask:</td><td>${result.binary_subnet_mask}</td></tr>
     <tr><td>IP Class:</td><td>${result.ip_class}</td></tr>
     <tr><td>IP Type:</td><td>${result.ip_type}</td></tr>
-    <tr><td>Short Notation:</td><td>${result.short_notation}</td></tr>
+    <tr><td>Wildcard Mask:</td><td>${result.wildcard_mask}</td></tr>
+    <tr><td>Binary Subnet Mask:</td><td>${result.binary_subnet_mask}</td></tr>
   </table>
 `;
 
-// Voeg het extra groen blok met de prefix-tabel toe, direct onder het resultaat
 const subnetTableHtml = `
   <div id="subnet-table">
-    <h3>Subnet Prefix Table</h3>
+    <h3>Subnets and sizes (for reference)</h3>
     <table>
       <thead>
         <tr>
-          <th>Prefix Size</th>
-          <th>Network Mask</th>
-          <th>Usable Hosts per Subnet</th>
+          <th>Prefix</th>
+          <th>Subnet mask</th>
+          <th>Usable addresses</th>
         </tr>
       </thead>
       <tbody>
+        <tr><td><strong>Supernets (ISPs)</strong></td><td></td><td></td></tr>
+        <tr><td>/0</td><td>0.0.0.0</td><td>Used as wildcard</td></tr>
         <tr><td>/1</td><td>128.0.0.0</td><td>2,147,483,646</td></tr>
         <tr><td>/2</td><td>192.0.0.0</td><td>1,073,741,822</td></tr>
         <tr><td>/3</td><td>224.0.0.0</td><td>536,870,910</td></tr>
@@ -439,7 +440,7 @@ const subnetTableHtml = `
         <tr><td>/5</td><td>248.0.0.0</td><td>134,217,726</td></tr>
         <tr><td>/6</td><td>252.0.0.0</td><td>67,108,862</td></tr>
         <tr><td>/7</td><td>254.0.0.0</td><td>33,554,430</td></tr>
-        <tr><td>Class A</td><td></td><td></td></tr>
+        <tr><td><strong>Class A networks</strong></td><td></td><td></td></tr>
         <tr><td>/8</td><td>255.0.0.0</td><td>16,777,214</td></tr>
         <tr><td>/9</td><td>255.128.0.0</td><td>8,388,606</td></tr>
         <tr><td>/10</td><td>255.192.0.0</td><td>4,194,302</td></tr>
@@ -448,7 +449,7 @@ const subnetTableHtml = `
         <tr><td>/13</td><td>255.248.0.0</td><td>524,286</td></tr>
         <tr><td>/14</td><td>255.252.0.0</td><td>262,142</td></tr>
         <tr><td>/15</td><td>255.254.0.0</td><td>131,070</td></tr>
-        <tr><td>Class B</td><td></td><td></td></tr>
+        <tr><td><strong>Class B networks</strong></td><td></td><td></td></tr>
         <tr><td>/16</td><td>255.255.0.0</td><td>65,534</td></tr>
         <tr><td>/17</td><td>255.255.128.0</td><td>32,766</td></tr>
         <tr><td>/18</td><td>255.255.192.0</td><td>16,382</td></tr>
@@ -457,7 +458,7 @@ const subnetTableHtml = `
         <tr><td>/21</td><td>255.255.248.0</td><td>2,046</td></tr>
         <tr><td>/22</td><td>255.255.252.0</td><td>1,022</td></tr>
         <tr><td>/23</td><td>255.255.254.0</td><td>510</td></tr>
-        <tr><td>Class C</td><td></td><td></td></tr>
+        <tr><td><strong>Class C networks</strong></td><td></td><td></td></tr>
         <tr><td>/24</td><td>255.255.255.0</td><td>254</td></tr>
         <tr><td>/25</td><td>255.255.255.128</td><td>126</td></tr>
         <tr><td>/26</td><td>255.255.255.192</td><td>62</td></tr>
@@ -469,6 +470,7 @@ const subnetTableHtml = `
         <tr><td>/32</td><td>255.255.255.255</td><td>0</td></tr>
       </tbody>
     </table>
+    <p>Comma's used in amounts to not confuse with IP addresses.</p>
   </div>
 `;
 
