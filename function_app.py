@@ -113,7 +113,6 @@ def index():
         ipv6_prefix=ipv6_prefix
     )
 
-
 def main(req: func.HttpRequest) -> func.HttpResponse:
     environ = req.get_wsgi_environ()
     response_status = None
