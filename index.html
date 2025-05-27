@@ -206,6 +206,32 @@
     return true;
   }
 
+  function toBinaryOctet(num) {
+    return num.toString(2).padStart(8, '0');
+  }
+
+  function getIpClass(firstOctet) {
+    if (firstOctet >= 0 && firstOctet <= 127) return 'A';
+    if (firstOctet >= 128 && firstOctet <= 191) return 'B';
+    if (firstOctet >= 192 && firstOctet <= 223) return 'C';
+    if (firstOctet >= 224 && firstOctet <= 239) return 'D (Multicast)';
+    if (firstOctet >= 240 && firstOctet <= 255) return 'E (Experimental)';
+    return 'Unknown';
+  }
+
+  function getIpType(ipParts) {
+    const [a,b,c,d] = ipParts;
+    // Private ranges
+    if (a === 10) return 'Private';
+    if (a === 172 && b >= 16 && b <= 31) return 'Private';
+    if (a === 192 && b === 168) return 'Private';
+    if (a === 127) return 'Loopback';
+    if (a === 169 && b === 254) return 'Link-local';
+    if (a >= 224 && a <= 239) return 'Multicast';
+    if (a === 255 && b === 255 && c === 255 && d === 255) return 'Broadcast';
+    return 'Public';
+  }
+
   function calculateSubnet(ip, cidr) {
     cidr = Number(cidr);
     if (cidr < 0 || cidr > 32) return null;
@@ -237,13 +263,58 @@
       broadcastNum & 0xff
     ];
 
+    // Hosts calculation
     const hosts = cidr < 31 ? (2 ** (32 - cidr) - 2) : (cidr === 31 ? 2 : 1);
+
+    // Usable host range (if hosts > 0)
+    let firstHost = null, lastHost = null;
+    if (hosts > 0) {
+      firstHost = [
+        networkParts[0],
+        networkParts[1],
+        networkParts[2],
+        networkParts[3] + 1
+      ];
+      lastHost = [
+        broadcastParts[0],
+        broadcastParts[1],
+        broadcastParts[2],
+        broadcastParts[3] -1
+      ];
+    } else if (cidr === 31) {
+      // /31 has 2 usable IPs (both addresses usable)
+      firstHost = networkParts;
+      lastHost = broadcastParts;
+    } else {
+      // /32 only one IP
+      firstHost = networkParts;
+      lastHost = networkParts;
+    }
+
+    // Wildcard mask (inverse of subnet mask)
+    const wildcardParts = maskParts.map(octet => 255 - octet);
+
+    // Binary subnet mask
+    const binaryMask = maskParts.map(toBinaryOctet).join('.');
+
+    // IP Class and Type
+    const ipClass = getIpClass(ipParts[0]);
+    const ipType = getIpType(ipParts);
+
+    // Short notation: network + CIDR
+    const shortNotation = networkParts.join('.') + ' /' + cidr;
 
     return {
       subnet_mask: maskParts.join('.'),
       network_address: networkParts.join('.'),
       broadcast_address: broadcastParts.join('.'),
-      number_of_hosts: hosts
+      number_of_hosts: hosts,
+      usable_range: `${firstHost.join('.')} - ${lastHost.join('.')}`,
+      wildcard_mask: wildcardParts.join('.'),
+      binary_subnet_mask: binaryMask,
+      ip_class: ipClass,
+      ip_type: ipType,
+      short_notation: shortNotation
     };
   }
 
@@ -288,6 +359,12 @@
       <p><strong>Network address:</strong> ${result.network_address}</p>
       <p><strong>Broadcast address:</strong> ${result.broadcast_address}</p>
       <p><strong>Maximum hosts:</strong> ${result.number_of_hosts}</p>
+      <p><strong>Usable Host IP Range:</strong> ${result.usable_range}</p>
+      <p><strong>Wildcard Mask:</strong> ${result.wildcard_mask}</p>
+      <p><strong>Binary Subnet Mask:</strong> ${result.binary_subnet_mask}</p>
+      <p><strong>IP Class:</strong> ${result.ip_class}</p>
+      <p><strong>IP Type:</strong> ${result.ip_type}</p>
+      <p><strong>Short:</strong> ${result.short_notation}</p>
     `;
     resultDiv.style.display = 'block';
   });
