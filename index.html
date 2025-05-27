@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>IPv4 Subnet Calculator</title>
+<title>Subnet Calculator - justinverstijnen.nl</title>
 <style>
   /* Basisreset */
   * {
@@ -108,7 +108,7 @@
   margin-bottom: 1rem;
 }
 .logo {
-  max-width: 180px;
+  max-width: 50px;
   height: auto;
   user-select: none;
   pointer-events: auto;
@@ -133,24 +133,12 @@
   <a href="https://justinverstijnen.nl" target="_blank" rel="noopener noreferrer" class="logo-link">
     <img src="https://justinverstijnen.nl/wp-content/uploads/2025/04/cropped-Logo-2.0-Transparant.png" alt="Justin Verstijnen Logo" class="logo" />
   </a>
-  <h1>IPv4 Subnet Calculator</h1>
+  <h1>Subnet Calculator</h1>
   <form id="subnet-form" novalidate>
-    <label for="ip">IP-adres</label>
-    <input type="text" id="ip" name="ip" placeholder="bijv. 192.168.1.0" required />
-
-    <label for="ip-presets">IP Reeksen (Templates)</label>
-    <select id="ip-presets" aria-label="Kies een IP template">
-      <option value="">-- Kies een template --</option>
-      <option value="10.0.0.0">Privé Class A (10.0.0.0)</option>
-      <option value="172.16.0.0">Privé Class B (172.16.0.0)</option>
-      <option value="192.168.0.0">Privé Class C (192.168.0.0)</option>
-      <option value="127.0.0.1">Loopback (127.0.0.1)</option>
-      <option value="169.254.0.0">Link-local (169.254.0.0)</option>
-      <option value="224.0.0.0">Multicast (224.0.0.0)</option>
-      <option value="255.255.255.255">Broadcast (255.255.255.255)</option>
-    </select>
-
-    <label for="cidr">Subnet Masker (CIDR)</label>
+    <label for="ip">IP address*</label>
+    <input type="text" id="ip" name="ip" placeholder="ex. 192.168.1.0" required />
+    
+<label for="cidr">Subnet mask*</label>
     <select id="cidr" name="cidr" required>
       <option value="">-- Kies een subnet mask --</option>
       <option value="8">/8 - 255.0.0.0</option>
@@ -179,8 +167,20 @@
       <option value="31">/31 - 255.255.255.254</option>
       <option value="32">/32 - 255.255.255.255</option>
     </select>
+    
+    <label for="ip-presets">Templates</label>
+    <select id="ip-presets" aria-label="Choose template">
+      <option value="">-- Kies een template --</option>
+      <option value="10.0.0.0">Privé Class A (10.0.0.0)</option>
+      <option value="172.16.0.0">Privé Class B (172.16.0.0)</option>
+      <option value="192.168.0.0">Privé Class C (192.168.0.0)</option>
+      <option value="127.0.0.1">Loopback (127.0.0.1)</option>
+      <option value="169.254.0.0">Link-local (169.254.0.0)</option>
+      <option value="224.0.0.0">Multicast (224.0.0.0)</option>
+      <option value="255.255.255.255">Broadcast (255.255.255.255)</option>
+    </select>
 
-    <button type="submit">Bereken</button>
+    <button type="submit">Calculate subnet</button>
   </form>
 
   <div id="error-msg" class="error" style="display:none;"></div>
@@ -188,7 +188,6 @@
 </div>
 
 <script>
-  // Vul IP-adres veld als template wordt gekozen
   document.getElementById('ip-presets').addEventListener('change', (e) => {
     const ipInput = document.getElementById('ip');
     if(e.target.value) {
@@ -282,13 +281,13 @@
     }
 
     resultDiv.innerHTML = `
-      <h2>Subnet Berekening Resultaat</h2>
-      <p><strong>IP-adres:</strong> ${ip}</p>
-      <p><strong>CIDR:</strong> /${cidr}</p>
-      <p><strong>Subnet Masker:</strong> ${result.subnet_mask}</p>
-      <p><strong>Netwerkadres:</strong> ${result.network_address}</p>
-      <p><strong>Broadcastadres:</strong> ${result.broadcast_address}</p>
-      <p><strong>Aantal Hosts:</strong> ${result.number_of_hosts}</p>
+      <h2>Result of your subnet:</h2>
+      <p><strong>IP address:</strong> ${ip}</p>
+      <p><strong>CIDR network notation:</strong> /${cidr}</p>
+      <p><strong>Subnet mask:</strong> ${result.subnet_mask}</p>
+      <p><strong>Network address:</strong> ${result.network_address}</p>
+      <p><strong>Broadcast address:</strong> ${result.broadcast_address}</p>
+      <p><strong>Maximum hosts:</strong> ${result.number_of_hosts}</p>
     `;
     resultDiv.style.display = 'block';
   });
