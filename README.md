@@ -1,4 +1,5 @@
 Known issues;
 
-- Export button strange
-- Subnet table not visible (only on page, not in the export)
+- Export button strange, same style as export button in DNS tool background color: #92dba5
+- Subnet table visible on export page
+- Export page markup as fuck
