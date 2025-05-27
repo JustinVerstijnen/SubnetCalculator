@@ -177,11 +177,7 @@
   position: relative;
   cursor: pointer;
   color: #1e40af;
-  text-decoration: underline;
-}
-
-.tooltip:hover .tooltip-text {
-  visibility: visible;
+  font-weight: 600;
 }
 
 .tooltip-text {
@@ -189,24 +185,34 @@
   position: absolute;
   left: 0;
   top: 100%;
-  background-color: #f9fafb;
-  color: #333;
+  background-color: #ffffff;
+  color: #333333;
   border: 1px solid #8EAFDA;
-  border-radius: 4px;
-  padding: 5px;
-  width: max-content;
-  max-width: 300px;
+  border-radius: 8px;
+  padding: 8px;
   font-size: 0.9rem;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  width: 250px
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 100;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, visibility 0s 0.3s;
 }
+
 .tooltip:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
+.tooltip-text::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: -6px;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #8EAFDA;
+}
   /* Responsive */
   @media (max-width: 480px) {
     form {
