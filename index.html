@@ -85,8 +85,8 @@
   }
   /* Result box */
   .result {
-    background: #eff6ff;
-    border: 1px solid #93c5fd;
+    background: #8EAFDA;
+    border: 1px solid #637b99;
     border-radius: 8px;
     padding: 1.5rem 2rem;
     box-shadow: inset 0 0 12px #93c5fdaa;
@@ -114,7 +114,7 @@
   pointer-events: auto;
 }
   .result strong {
-    color: #1e3a8a;
+    color: #637b99;
   }
   /* Responsive */
   @media (max-width: 480px) {
@@ -333,12 +333,12 @@
     resultDiv.innerHTML = '';
 
     if (!isValidIp(ip)) {
-      errorDiv.textContent = 'Ongeldig IP-adres!';
+      errorDiv.textContent = 'Invalid IP address!!';
       errorDiv.style.display = 'block';
       return;
     }
     if (!cidr) {
-      errorDiv.textContent = 'Selecteer een subnet masker!';
+      errorDiv.textContent = 'Select a Subnet mask!';
       errorDiv.style.display = 'block';
       return;
     }
@@ -346,7 +346,7 @@
     const result = calculateSubnet(ip, cidr);
 
     if (!result) {
-      errorDiv.textContent = 'Fout bij berekening!';
+      errorDiv.textContent = 'Error calculating your subnet';
       errorDiv.style.display = 'block';
       return;
     }
