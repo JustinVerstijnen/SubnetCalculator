@@ -6,3 +6,5 @@ azure-functions
 dnspython
 fpdf
 weasyprint
+werkzeug
+flask
