@@ -3,177 +3,227 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>IPv4 Subnet Calculator (Client-side)</title>
+<title>IPv4 Subnet Calculator</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f1f5f9;
-        color: #334155;
-        margin: 2em;
-    }
-    h1 {
-        text-align: center;
-        color: #1e293b;
-    }
+  /* Reset en basis */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f7f7f7;
+    margin: 0;
+    padding: 2rem 1rem;
+    color: #222;
+  }
+  h1 {
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  /* Container */
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  /* Form */
+  form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 2rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+  }
+  label {
+    font-weight: 600;
+  }
+  input[type="text"],
+  input[type="number"] {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.2s ease-in-out;
+  }
+  input[type="text"]:focus,
+  input[type="number"]:focus {
+    outline: none;
+    border-color: #007acc;
+    box-shadow: 0 0 5px rgba(0,122,204,0.5);
+  }
+  /* Submit button */
+  button {
+    grid-column: 1 / -1;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    background-color: #007acc;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #005fa3;
+  }
+  /* Error message */
+  .error {
+    color: #cc0000;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  /* Result */
+  .result {
+    background-color: #f0f9ff;
+    border: 1px solid #90c8f8;
+    padding: 1rem 1.5rem;
+    border-radius: 5px;
+    box-shadow: inset 0 0 5px #90c8f8;
+  }
+  .result h2 {
+    margin-top: 0;
+    font-weight: 700;
+    color: #007acc;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  .result p {
+    margin: 0.3rem 0;
+    font-size: 1rem;
+  }
+  .result strong {
+    color: #004a75;
+  }
+  /* Responsive */
+  @media (max-width: 480px) {
     form {
-        background-color: #e2e8f0;
-        padding: 1.5em;
-        border-radius: 8px;
-        max-width: 400px;
-        margin: 0 auto 2em auto;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    label {
-        display: block;
-        margin-bottom: 0.5em;
-        font-weight: bold;
-        color: #0f172a;
-    }
-    input[type="text"], input[type="number"] {
-        width: 100%;
-        padding: 0.5em;
-        border: 1px solid #94a3b8;
-        border-radius: 4px;
-        margin-bottom: 1em;
-        font-size: 1em;
+      grid-template-columns: 1fr;
+      gap: 1rem;
     }
     button {
-        background-color: #22c55e;
-        color: white;
-        border: none;
-        padding: 0.75em 1.5em;
-        font-size: 1em;
-        border-radius: 6px;
-        cursor: pointer;
-        width: 100%;
+      grid-column: 1;
     }
-    button:hover {
-        background-color: #16a34a;
-    }
-    .result {
-        background-color: #dcfce7;
-        border: 1px solid #22c55e;
-        max-width: 400px;
-        margin: 0 auto;
-        padding: 1em 1.5em;
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(34, 197, 94, 0.25);
-    }
-    .error {
-        color: #dc2626;
-        max-width: 400px;
-        margin: 0 auto 1em auto;
-        font-weight: bold;
-        text-align: center;
-    }
+  }
 </style>
 </head>
 <body>
-<h1>IPv4 Subnet Calculator</h1>
+<div class="container">
+  <h1>IPv4 Subnet Calculator</h1>
 
-<form id="subnet-form">
-    <label for="ip">IP-adres:</label>
+  <form id="subnet-form" novalidate>
+    <label for="ip">IP-adres</label>
     <input type="text" id="ip" name="ip" placeholder="bijv. 192.168.1.0" required />
-    <label for="cidr">CIDR (0-32):</label>
+    <label for="cidr">CIDR (0-32)</label>
     <input type="number" id="cidr" name="cidr" min="0" max="32" placeholder="bijv. 24" required />
     <button type="submit">Bereken</button>
-</form>
+  </form>
 
-<div id="error-msg" class="error" style="display:none;"></div>
-<div id="result" class="result" style="display:none;"></div>
+  <div id="error-msg" class="error" style="display:none;"></div>
+
+  <div id="result" class="result" style="display:none;"></div>
+</div>
 
 <script>
 function isValidIp(ip) {
-    const parts = ip.split('.');
-    if (parts.length !== 4) return false;
-    for (let part of parts) {
-        const num = Number(part);
-        if (isNaN(num) || num < 0 || num > 255) return false;
-    }
-    return true;
+  const parts = ip.split('.');
+  if (parts.length !== 4) return false;
+  for (const part of parts) {
+    if (!/^\d+$/.test(part)) return false;
+    const num = Number(part);
+    if (num < 0 || num > 255) return false;
+  }
+  return true;
 }
 
 function calculateSubnet(ip, cidr) {
-    cidr = Number(cidr);
-    if (cidr < 0 || cidr > 32) return null;
+  cidr = Number(cidr);
+  if (cidr < 0 || cidr > 32) return null;
 
-    const ipParts = ip.split('.').map(Number);
+  const ipParts = ip.split('.').map(Number);
 
-    const mask = (0xffffffff >>> (32 - cidr)) << (32 - cidr);
-    const maskParts = [
-        (mask >>> 24) & 0xff,
-        (mask >>> 16) & 0xff,
-        (mask >>> 8) & 0xff,
-        mask & 0xff
-    ];
+  const mask = (0xffffffff >>> (32 - cidr)) << (32 - cidr);
+  const maskParts = [
+    (mask >>> 24) & 0xff,
+    (mask >>> 16) & 0xff,
+    (mask >>> 8) & 0xff,
+    mask & 0xff
+  ];
 
-    const ipNum = (ipParts[0] << 24) + (ipParts[1] << 16) + (ipParts[2] << 8) + ipParts[3];
-    const networkNum = ipNum & mask;
-    const networkParts = [
-        (networkNum >>> 24) & 0xff,
-        (networkNum >>> 16) & 0xff,
-        (networkNum >>> 8) & 0xff,
-        networkNum & 0xff
-    ];
+  const ipNum = (ipParts[0] << 24) + (ipParts[1] << 16) + (ipParts[2] << 8) + ipParts[3];
+  const networkNum = ipNum & mask;
+  const networkParts = [
+    (networkNum >>> 24) & 0xff,
+    (networkNum >>> 16) & 0xff,
+    (networkNum >>> 8) & 0xff,
+    networkNum & 0xff
+  ];
 
-    const broadcastNum = networkNum | (~mask >>> 0);
-    const broadcastParts = [
-        (broadcastNum >>> 24) & 0xff,
-        (broadcastNum >>> 16) & 0xff,
-        (broadcastNum >>> 8) & 0xff,
-        broadcastNum & 0xff
-    ];
+  const broadcastNum = networkNum | (~mask >>> 0);
+  const broadcastParts = [
+    (broadcastNum >>> 24) & 0xff,
+    (broadcastNum >>> 16) & 0xff,
+    (broadcastNum >>> 8) & 0xff,
+    broadcastNum & 0xff
+  ];
 
-    const hosts = cidr < 31 ? (2 ** (32 - cidr) - 2) : (cidr === 31 ? 2 : 1);
+  const hosts = cidr < 31 ? (2 ** (32 - cidr) - 2) : (cidr === 31 ? 2 : 1);
 
-    return {
-        subnet_mask: maskParts.join('.'),
-        network_address: networkParts.join('.'),
-        broadcast_address: broadcastParts.join('.'),
-        number_of_hosts: hosts
-    };
+  return {
+    subnet_mask: maskParts.join('.'),
+    network_address: networkParts.join('.'),
+    broadcast_address: broadcastParts.join('.'),
+    number_of_hosts: hosts
+  };
 }
 
 document.getElementById('subnet-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const ip = document.getElementById('ip').value.trim();
-    const cidr = document.getElementById('cidr').value.trim();
+  e.preventDefault();
+  const ip = document.getElementById('ip').value.trim();
+  const cidr = document.getElementById('cidr').value.trim();
 
-    const errorDiv = document.getElementById('error-msg');
-    const resultDiv = document.getElementById('result');
-    errorDiv.style.display = 'none';
-    resultDiv.style.display = 'none';
-    errorDiv.textContent = '';
-    resultDiv.innerHTML = '';
+  const errorDiv = document.getElementById('error-msg');
+  const resultDiv = document.getElementById('result');
+  errorDiv.style.display = 'none';
+  resultDiv.style.display = 'none';
+  errorDiv.textContent = '';
+  resultDiv.innerHTML = '';
 
-    if (!isValidIp(ip)) {
-        errorDiv.textContent = "Ongeldig IP-adres!";
-        errorDiv.style.display = 'block';
-        return;
-    }
-    if (isNaN(cidr) || cidr < 0 || cidr > 32) {
-        errorDiv.textContent = "CIDR moet tussen 0 en 32 liggen!";
-        errorDiv.style.display = 'block';
-        return;
-    }
+  if (!isValidIp(ip)) {
+    errorDiv.textContent = "Ongeldig IP-adres!";
+    errorDiv.style.display = 'block';
+    return;
+  }
+  if (isNaN(cidr) || cidr < 0 || cidr > 32) {
+    errorDiv.textContent = "CIDR moet tussen 0 en 32 liggen!";
+    errorDiv.style.display = 'block';
+    return;
+  }
 
-    const result = calculateSubnet(ip, cidr);
-    if (!result) {
-        errorDiv.textContent = "Fout bij berekening!";
-        errorDiv.style.display = 'block';
-        return;
-    }
+  const result = calculateSubnet(ip, cidr);
+  if (!result) {
+    errorDiv.textContent = "Fout bij berekening!";
+    errorDiv.style.display = 'block';
+    return;
+  }
 
-    resultDiv.innerHTML = `
-        <h2>Subnet Berekening Resultaat</h2>
-        <p><strong>IP-adres:</strong> ${ip}</p>
-        <p><strong>CIDR:</strong> /${cidr}</p>
-        <p><strong>Subnet Masker:</strong> ${result.subnet_mask}</p>
-        <p><strong>Netwerkadres:</strong> ${result.network_address}</p>
-        <p><strong>Broadcastadres:</strong> ${result.broadcast_address}</p>
-        <p><strong>Aantal Hosts:</strong> ${result.number_of_hosts}</p>
-    `;
-    resultDiv.style.display = 'block';
+  resultDiv.innerHTML = `
+    <h2>Subnet Berekening Resultaat</h2>
+    <p><strong>IP-adres:</strong> ${ip}</p>
+    <p><strong>CIDR:</strong> /${cidr}</p>
+    <p><strong>Subnet Masker:</strong> ${result.subnet_mask}</p>
+    <p><strong>Netwerkadres:</strong> ${result.network_address}</p>
+    <p><strong>Broadcastadres:</strong> ${result.broadcast_address}</p>
+    <p><strong>Aantal Hosts:</strong> ${result.number_of_hosts}</p>
+  `;
+  resultDiv.style.display = 'block';
 });
 </script>
 </body>
