@@ -1,133 +1,145 @@
 import azure.functions as func
-from flask import Flask, request, render_template_string
-import ipaddress
 
-app = Flask(__name__)
+def calculate_subnet(ip, cidr):
+    try:
+        cidr = int(cidr)
+        if cidr < 0 or cidr > 32:
+            return None
+    except:
+        return None
 
-HTML = """
+    ip_parts = ip.split('.')
+    if len(ip_parts) != 4:
+        return None
+
+    try:
+        ip_parts = [int(part) for part in ip_parts]
+        if any(part < 0 or part > 255 for part in ip_parts):
+            return None
+    except:
+        return None
+
+    # Bereken het subnetmasker
+    mask = (0xffffffff >> (32 - cidr)) << (32 - cidr)
+    mask_parts = [(mask >> 24) & 0xff, (mask >> 16) & 0xff, (mask >> 8) & 0xff, mask & 0xff]
+
+    # Bereken netwerkadres
+    ip_num = (ip_parts[0] << 24) + (ip_parts[1] << 16) + (ip_parts[2] << 8) + ip_parts[3]
+    network_num = ip_num & mask
+    network_parts = [(network_num >> 24) & 0xff, (network_num >> 16) & 0xff, (network_num >> 8) & 0xff, network_num & 0xff]
+
+    # Bereken broadcastadres
+    broadcast_num = network_num | (~mask & 0xffffffff)
+    broadcast_parts = [(broadcast_num >> 24) & 0xff, (broadcast_num >> 16) & 0xff, (broadcast_num >> 8) & 0xff, broadcast_num & 0xff]
+
+    # Aantal hosts
+    hosts = 2**(32 - cidr) - 2 if cidr < 31 else (1 if cidr == 31 else 0)
+
+    return {
+        'subnet_mask': '.'.join(str(part) for part in mask_parts),
+        'network_address': '.'.join(str(part) for part in network_parts),
+        'broadcast_address': '.'.join(str(part) for part in broadcast_parts),
+        'number_of_hosts': hosts
+    }
+
+def main(req: func.HttpRequest) -> func.HttpResponse:
+    ip = req.params.get('ip')
+    cidr = req.params.get('cidr')
+
+    if not ip or not cidr:
+        return func.HttpResponse(html_form, mimetype="text/html")
+
+    result = calculate_subnet(ip, cidr)
+    if not result:
+        return func.HttpResponse(html_form + "<p style='color:red;'>Invalid input. Please enter a valid IPv4 address and CIDR (0-32).</p>", mimetype="text/html")
+
+    response_html = html_form + f"""
+    <div class="result">
+        <h2>Subnet Calculation Result</h2>
+        <p><strong>IP Address:</strong> {ip}</p>
+        <p><strong>CIDR:</strong> /{cidr}</p>
+        <p><strong>Subnet Mask:</strong> {result['subnet_mask']}</p>
+        <p><strong>Network Address:</strong> {result['network_address']}</p>
+        <p><strong>Broadcast Address:</strong> {result['broadcast_address']}</p>
+        <p><strong>Number of Hosts:</strong> {result['number_of_hosts']}</p>
+    </div>
+    """
+
+    return func.HttpResponse(response_html, mimetype="text/html")
+
+html_form = """
 <!DOCTYPE html>
-<html>
+<html lang="nl">
 <head>
-    <title>IP Subnet Calculator</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>IPv4 Subnet Calculator</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f1f5f9;
+        color: #334155;
+        margin: 2em;
+    }
+    h1 {
+        text-align: center;
+        color: #1e293b;
+    }
+    form {
+        background-color: #e2e8f0;
+        padding: 1.5em;
+        border-radius: 8px;
+        max-width: 400px;
+        margin: 0 auto 2em auto;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    label {
+        display: block;
+        margin-bottom: 0.5em;
+        font-weight: bold;
+        color: #0f172a;
+    }
+    input[type="text"], input[type="number"] {
+        width: 100%;
+        padding: 0.5em;
+        border: 1px solid #94a3b8;
+        border-radius: 4px;
+        margin-bottom: 1em;
+        font-size: 1em;
+    }
+    button {
+        background-color: #22c55e;
+        color: white;
+        border: none;
+        padding: 0.75em 1.5em;
+        font-size: 1em;
+        border-radius: 6px;
+        cursor: pointer;
+        width: 100%;
+    }
+    button:hover {
+        background-color: #16a34a;
+    }
+    .result {
+        background-color: #dcfce7;
+        border: 1px solid #22c55e;
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 1em 1.5em;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(34, 197, 94, 0.25);
+    }
+</style>
 </head>
 <body>
-    <h2>IPv4 Subnet Calculator</h2>
-    <form method="post">
-        <label>IPv4 Address:</label>
-        <input type="text" name="ipv4_address" value="{{ ipv4_address or '' }}" required>
-        <label>Subnet Mask (CIDR or dotted):</label>
-        <input type="text" name="ipv4_subnet" value="{{ ipv4_subnet or '' }}" required>
-        <button type="submit" name="action" value="ipv4">Calculate IPv4</button>
-    </form>
-
-    {% if ipv4_result %}
-        <h3>IPv4 Result:</h3>
-        {% if ipv4_is_error %}
-            <p style="color:red;">{{ ipv4_result }}</p>
-        {% else %}
-            <ul>
-                <li>Network: {{ ipv4_result.network }}</li>
-                <li>Broadcast: {{ ipv4_result.broadcast }}</li>
-                <li>Netmask: {{ ipv4_result.netmask }}</li>
-                <li>Hostmask: {{ ipv4_result.hostmask }}</li>
-                <li>Total hosts: {{ ipv4_result.num_addresses }}</li>
-                <li>Usable hosts: {{ ipv4_result.num_addresses - 2 if ipv4_result.num_addresses > 2 else 0 }}</li>
-                <li>First usable IP: {{ ipv4_result.network + 1 if ipv4_result.num_addresses > 2 else 'N/A' }}</li>
-                <li>Last usable IP: {{ ipv4_result.broadcast - 1 if ipv4_result.num_addresses > 2 else 'N/A' }}</li>
-            </ul>
-        {% endif %}
-    {% endif %}
-
-    <hr>
-
-    <h2>IPv6 Subnet Calculator</h2>
-    <form method="post">
-        <label>IPv6 Address:</label>
-        <input type="text" name="ipv6_address" value="{{ ipv6_address or '' }}" required>
-        <label>Prefix Length (e.g. /64):</label>
-        <input type="text" name="ipv6_prefix" value="{{ ipv6_prefix or '' }}" required>
-        <button type="submit" name="action" value="ipv6">Calculate IPv6</button>
-    </form>
-
-    {% if ipv6_result %}
-        <h3>IPv6 Result:</h3>
-        {% if ipv6_is_error %}
-            <p style="color:red;">{{ ipv6_result }}</p>
-        {% else %}
-            <ul>
-                <li>Network: {{ ipv6_result.network }}</li>
-                <li>Num addresses: {{ ipv6_result.num_addresses }}</li>
-                <li>Prefix length: {{ ipv6_result.prefixlen }}</li>
-            </ul>
-        {% endif %}
-    {% endif %}
-
+<h1>IPv4 Subnet Calculator</h1>
+<form method="get">
+    <label for="ip">IP-adres:</label>
+    <input type="text" id="ip" name="ip" placeholder="bijv. 192.168.1.0" required />
+    <label for="cidr">CIDR (0-32):</label>
+    <input type="number" id="cidr" name="cidr" min="0" max="32" placeholder="bijv. 24" required />
+    <button type="submit">Bereken</button>
+</form>
 </body>
 </html>
 """
-
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    ipv4_result = None
-    ipv4_is_error = False
-    ipv6_result = None
-    ipv6_is_error = False
-    ipv4_address = ipv4_subnet = ipv6_address = ipv6_prefix = None
-
-    if request.method == 'POST':
-        action = request.form.get('action')
-        if action == 'ipv4':
-            ipv4_address = request.form.get('ipv4_address')
-            ipv4_subnet = request.form.get('ipv4_subnet')
-            try:
-                if '/' in ipv4_subnet:
-                    network = ipaddress.IPv4Network(f"{ipv4_address}{ipv4_subnet}", strict=False)
-                else:
-                    network = ipaddress.IPv4Network(f"{ipv4_address}/{ipv4_subnet}", strict=False)
-                ipv4_result = network
-            except Exception as e:
-                ipv4_result = f"Error: {e}"
-                ipv4_is_error = True
-
-        elif action == 'ipv6':
-            ipv6_address = request.form.get('ipv6_address')
-            ipv6_prefix = request.form.get('ipv6_prefix')
-            try:
-                if not ipv6_prefix.startswith('/'):
-                    ipv6_prefix = '/' + ipv6_prefix
-                network = ipaddress.IPv6Network(f"{ipv6_address}{ipv6_prefix}", strict=False)
-                ipv6_result = network
-            except Exception as e:
-                ipv6_result = f"Error: {e}"
-                ipv6_is_error = True
-
-    return render_template_string(
-        HTML,
-        ipv4_result=ipv4_result,
-        ipv4_is_error=ipv4_is_error,
-        ipv6_result=ipv6_result,
-        ipv6_is_error=ipv6_is_error,
-        ipv4_address=ipv4_address,
-        ipv4_subnet=ipv4_subnet,
-        ipv6_address=ipv6_address,
-        ipv6_prefix=ipv6_prefix
-    )
-
-def main(req: func.HttpRequest) -> func.HttpResponse:
-    environ = req.get_wsgi_environ()
-    response_status = None
-    response_headers = []
-
-    def start_response(status, headers):
-        nonlocal response_status, response_headers
-        response_status = status
-        response_headers = headers
-        return lambda x: None
-
-    result = app.wsgi_app(environ, start_response)
-    body = b''.join(result)
-
-    status_code = int(response_status.split()[0])
-    headers = {k: v for k, v in response_headers}
-
-    return func.HttpResponse(body, status_code=status_code, headers=headers)
