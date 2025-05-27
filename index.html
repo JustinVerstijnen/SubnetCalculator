@@ -173,6 +173,40 @@
   user-select: none;
   pointer-events: auto;
 }
+  .tooltip {
+  position: relative;
+  cursor: pointer;
+  color: #1e40af;
+  text-decoration: underline;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  background-color: #f9fafb;
+  color: #333;
+  border: 1px solid #8EAFDA;
+  border-radius: 4px;
+  padding: 5px;
+  width: max-content;
+  max-width: 300px;
+  font-size: 0.9rem;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
   /* Responsive */
   @media (max-width: 480px) {
     form {
@@ -404,18 +438,18 @@
     resultDiv.innerHTML = `
   <h2>Subnet Calculation Result:</h2>
   <table>
-    <tr><td>CIDR notation:</td><td>${result.short_notation}</td></tr>
-    <tr><td>IP Address:</td><td>${ip}</td></tr>
-    <tr><td>Subnet Mask:</td><td>${result.subnet_mask}</td></tr>
-    <tr><td>CIDR Prefix:</td><td>/${cidr}</td></tr>
-    <tr><td>Maximum Possible Hosts:</td><td>${result.formatted_hosts}</td></tr>
-    <tr><td>Usable Address Range:</td><td>${result.usable_range}</td></tr>
-    <tr><td>Network Address:</td><td>${result.network_address}</td></tr>
-    <tr><td>Broadcast Address:</td><td>${result.broadcast_address}</td></tr>
-    <tr><td>IP Class:</td><td>${result.ip_class}</td></tr>
-    <tr><td>IP Type:</td><td>${result.ip_type}</td></tr>
-    <tr><td>Wildcard Mask:</td><td>${result.wildcard_mask}</td></tr>
-    <tr><td>Binary Subnet Mask:</td><td>${result.binary_subnet_mask}</td></tr>
+    <tr><td><span class="tooltip">CIDR notation<span class="tooltip-text">CIDR (Classless Inter-Domain Routing) notation is used to specify IP addresses and their associated subnet masks. It combines the IP address and the prefix length into a single identifier (e.g., 10.0.0.0/8).</span></span>:</td><td>${result.short_notation}</td></tr>
+    <tr><td><span class="tooltip">IP Address<span class="tooltip-text">An IP address is a unique identifier for a device on a network, enabling communication between devices.</span></span>:</td><td>${ip}</td></tr>
+    <tr><td><span class="tooltip">Subnet Mask<span class="tooltip-text">A subnet mask is used to divide an IP address into network and host portions, determining which addresses are in the same subnet.</span></span>:</td><td>${result.subnet_mask}</td></tr>
+    <tr><td><span class="tooltip">CIDR Prefix<span class="tooltip-text">The CIDR prefix indicates the number of bits used to identify the network part of an IP address. For example, /24 means the first 24 bits are used for the network.</span></span>:</td><td>/${cidr}</td></tr>
+    <tr><td><span class="tooltip">Maximum Possible Hosts<span class="tooltip-text">This is the maximum number of hosts that can be assigned within the subnet, based on the subnet mask. It excludes the network and broadcast addresses.</span></span>:</td><td>${result.formatted_hosts}</td></tr>
+    <tr><td><span class="tooltip">Usable Address Range<span class="tooltip-text">The range of IP addresses available for devices within the subnet, excluding the network and broadcast addresses.</span></span>:</td><td>${result.usable_range}</td></tr>
+    <tr><td><span class="tooltip">Network Address<span class="tooltip-text">The network address is the first address in a subnet and is used to identify the subnet itself.</span></span>:</td><td>${result.network_address}</td></tr>
+    <tr><td><span class="tooltip">Broadcast Address<span class="tooltip-text">The broadcast address is used to send data to all devices within a subnet. It is the last address in the subnet.</span></span>:</td><td>${result.broadcast_address}</td></tr>
+    <tr><td><span class="tooltip">IP Class<span class="tooltip-text">IP classes (A, B, C, D, E) categorize IP address ranges for various purposes, such as private networks or public internet addressing.</span></span>:</td><td>${result.ip_class}</td></tr>
+    <tr><td><span class="tooltip">IP Type<span class="tooltip-text">The IP Type indicates whether the address is private, public, loopback, or multicast.</span></span>:</td><td>${result.ip_type}</td></tr>
+    <tr><td><span class="tooltip">Wildcard Mask<span class="tooltip-text">The wildcard mask is the inverse of the subnet mask, used in routing protocols like OSPF to define which bits are ignored when routing.</span></span>:</td><td>${result.wildcard_mask}</td></tr>
+    <tr><td><span class="tooltip">Binary Subnet Mask<span class="tooltip-text">The binary subnet mask represents the subnet mask in binary form, making it easier to understand the network structure.</span></span>:</td><td>${result.binary_subnet_mask}</td></tr>
   </table>
 `;
 
@@ -470,7 +504,7 @@ const subnetTableHtml = `
         <tr><td>/32</td><td>255.255.255.255</td><td>0</td></tr>
       </tbody>
     </table>
-    <p>Comma's used in amounts to not confuse with IP addresses.</p>
+    <p>Comma's used in Usable addresses to not be confused with IP addresses ;)</p>
   </div>
 `;
 
