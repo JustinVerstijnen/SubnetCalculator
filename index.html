@@ -200,6 +200,12 @@
     opacity: 1;
     transition: opacity 0.3s ease;
   }
+ #export-btn {
+  display: flex;
+  justify-content: center;
+  margin: 20px auto 0 auto;
+  width: fit-content;
+}
   .tooltip-text::before {
     content: "";
     position: absolute;
@@ -233,7 +239,6 @@
   <form id="subnet-form" novalidate>
     <label for="ip">IP address*</label>
     <input type="text" id="ip" name="ip" placeholder="ex. 192.168.1.0" required />
-    
     <label for="cidr">Subnet mask*</label>
     <select id="cidr" name="cidr" required>
       <option value="">-- Choose subnet mask --</option>
