@@ -170,7 +170,6 @@
     user-select: none;
     pointer-events: auto;
   }
-  /* Tooltip styling */
   .tooltip {
     position: relative;
     cursor: pointer;
@@ -203,8 +202,24 @@
  #export-btn {
   display: flex;
   justify-content: center;
-  margin: 20px auto 0 auto;
+  align-items: center;
+  margin: 2rem auto 0 auto;
+  padding: 0.85rem 1.5rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #92DBA5;
+  color: white;
+  cursor: pointer;
   width: fit-content;
+  gap: 10px;
+  box-shadow: none;
+  transition: background-color 0.3s ease;
+}
+
+#export-btn:hover {
+  background-color: #7ac58d;
 }
   .tooltip-text::before {
     content: "";
@@ -285,9 +300,9 @@
     </button>
   </form>
 
-  <button id="export-btn" class="btn" style="display: none; margin-top: 20px;">
-    <i class="fas fa-download"></i> Export to HTML
-  </button>
+  <button id="export-btn" class="btn" style="display: none; margin-top: 2rem;">
+  <i class="fas fa-download"></i> Export to HTML
+</button>
 
   <div id="error-msg" class="error" style="display:none;"></div>
   <div id="result" class="result" style="display:none;"></div>
