@@ -568,71 +568,66 @@
     });
 
     exportBtn.addEventListener('click', () => {
-      const htmlContent = `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-          <meta charset="UTF-8" />
-          <title>Subnet Calculation Result</title>
-          <style>
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 2rem; background: #f9fafb; color: #2e3440; }
-            h2 { text-align: center; color: #294172; font-weight: 700; }
-            table { width: 100%; border-collapse: collapse; font-size: 1.05rem; margin-bottom: 2rem; }
-            td:first-child { font-weight: 700; color: #1e40af; padding: 8px 12px 8px 0; width: 45%; }
-            td:last-child { padding: 8px 0 8px 12px; color: #303136; }
-            #subnet-table { background: #daf5dc; border: 1px solid #8bc34a; border-radius: 8px; padding: 1rem 1.5rem; box-shadow: inset 0 0 8px #8bc34a66; color: #3a5f0b; font-weight: 600; max-width: 912px; margin: 0 auto 2rem auto; overflow-x: auto; }
-            #subnet-table h3 { text-align: center; margin-top: 0; margin-bottom: 1rem; font-weight: 700; color: #4caf50; }
-            #subnet-table table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
-            #subnet-table th, #subnet-table td { border: 1px solid #8bc34a; padding: 6px 12px; text-align: center; }
-            #subnet-table th { background-color: #a5d6a7; color: #2e7d32; font-weight: 700; }
-            #subnet-table tr:nth-child(even) { background-color: #c8e6c9; }
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <title>Subnet Calculation Result</title>
+      <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 2rem; background: #f9fafb; color: #2e3440; }
+        h2 { text-align: center; color: #294172; font-weight: 700; }
+        table { width: 100%; border-collapse: collapse; font-size: 1.05rem; margin-bottom: 2rem; }
+        td:first-child { font-weight: 700; color: #1e40af; padding: 8px 12px 8px 0; width: 45%; }
+        td:last-child { padding: 8px 0 8px 12px; color: #303136; }
 
-            .tooltip {
-              position: relative;
-              cursor: help;
-              border-bottom: 1px dotted #1e40af;
-            }
-            .tooltip .tooltip-text {
-              visibility: hidden;
-              width: 280px;
-              background-color: #294172;
-              color: #fff;
-              text-align: left;
-              border-radius: 5px;
-              padding: 8px;
-              position: absolute;
-              z-index: 1;
-              bottom: 100%;
-              left: 50%;
-              margin-left: -140px;
-              opacity: 0;
-              transition: opacity 0.3s;
-              font-size: 0.85rem;
-              line-height: 1.3;
-            }
-            .tooltip:hover .tooltip-text {
-              visibility: visible;
-              opacity: 1;
-            }
-          </style>
-        </head>
-        <body>
-          ${resultDiv.innerHTML}
-          ${document.getElementById('subnet-table')?.outerHTML || ''}
-        </body>
-        </html>
-      `;
+        /* Tooltip styles */
+        .tooltip {
+          position: relative;
+          cursor: help;
+          border-bottom: 1px dotted #1e40af;
+        }
+        .tooltip .tooltip-text {
+          visibility: hidden;
+          width: 280px;
+          background-color: #294172;
+          color: #fff;
+          text-align: left;
+          border-radius: 5px;
+          padding: 8px;
+          position: absolute;
+          z-index: 1;
+          bottom: 100%;
+          left: 50%;
+          margin-left: -140px;
+          opacity: 0;
+          transition: opacity 0.3s;
+          font-size: 0.85rem;
+          line-height: 1.3;
+        }
+        .tooltip:hover .tooltip-text {
+          visibility: visible;
+          opacity: 1;
+        }
+      </style>
+    </head>
+    <body>
+      ${resultDiv.innerHTML}
+      <!-- subnet-table is intentionally excluded here -->
+    </body>
+    </html>
+  `;
 
-      const blob = new Blob([htmlContent], {type: "text/html"});
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'subnet-result.html';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    });
+  const blob = new Blob([htmlContent], {type: "text/html"});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'subnet-result.html';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+});
   });
 </script>
 </body>
