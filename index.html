@@ -588,95 +588,123 @@
     exportBtn.addEventListener('click', () => {
   const htmlContent = `
     <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <title>Subnet Calculation Result</title>
-      <style>
-        body {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          background: #f9fafb;
-          margin: 0;
-          padding: 2rem;
-          color: #2e3440;
-          display: flex;
-          justify-content: center;
-        }
-        .result {
-          background: #e0e6f8;
-          border: 1px solid #8EAFDA;
-          border-radius: 8px;
-          padding: 1.5rem 2rem;
-          box-shadow: inset 0 0 12px #8EAFDA88;
-          color: #1e2a4a;
-          font-weight: 600;
-          max-width: 912px;
-          width: 100%;
-        }
-        .result h2 {
-          color: #294172;
-          margin-top: 0;
-          margin-bottom: 1rem;
-          font-weight: 700;
-          text-align: center;
-        }
-        .result table {
-          width: 100%;
-          border-collapse: collapse;
-          font-size: 1.05rem;
-        }
-        .result table td:first-child {
-          font-weight: 700;
-          color: #1e40af;
-          padding: 8px 12px 8px 0;
-          width: 45%;
-        }
-        .result table td:last-child {
-          padding: 8px 0 8px 12px;
-          color: #303136;
-        }
-        /* Tooltip styling */
-        .tooltip {
-          position: relative;
-          cursor: help;
-          border-bottom: 1px dotted #1e40af;
-          font-weight: 600;
-          color: #1e40af;
-        }
-        .tooltip .tooltip-text {
-          visibility: hidden;
-          width: 280px;
-          background-color: #294172;
-          color: #fff;
-          text-align: left;
-          border-radius: 5px;
-          padding: 8px;
-          position: absolute;
-          z-index: 1;
-          bottom: 100%;
-          left: 50%;
-          margin-left: -140px;
-          opacity: 0;
-          transition: opacity 0.3s;
-          font-size: 0.85rem;
-          line-height: 1.3;
-        }
-        .tooltip:hover .tooltip-text {
-          visibility: visible;
-          opacity: 1;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="result">
-      <a href="https://justinverstijnen.nl" target="_blank" rel="noopener noreferrer" class="logo-link">
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Subnet Calculation Result</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      padding: 2rem;
+      color: #2e3440;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .logo-link {
+      display: block;
+      margin-bottom: 1rem;
+    }
+    .logo {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+    .result {
+      background: #e0e6f8;
+      border: 1px solid #8EAFDA;
+      border-radius: 8px;
+      padding: 1.5rem 2rem;
+      box-shadow: inset 0 0 12px #8EAFDA88;
+      color: #1e2a4a;
+      font-weight: 600;
+      max-width: 912px;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    .result h2 {
+      color: #294172;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      text-align: center;
+    }
+    .result table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1.05rem;
+    }
+    .result table td:first-child {
+      font-weight: 700;
+      color: #1e40af;
+      padding: 8px 12px 8px 0;
+      width: 45%;
+    }
+    .result table td:last-child {
+      padding: 8px 0 8px 12px;
+      color: #303136;
+    }
+    /* Tooltip styling */
+    .tooltip {
+      position: relative;
+      cursor: help;
+      border-bottom: 1px dotted #1e40af;
+      font-weight: 600;
+      color: #1e40af;
+    }
+    .tooltip .tooltip-text {
+      visibility: hidden;
+      width: 280px;
+      background-color: #294172;
+      color: #fff;
+      text-align: left;
+      border-radius: 5px;
+      padding: 8px;
+      position: absolute;
+      z-index: 1;
+      bottom: 100%;
+      left: 50%;
+      margin-left: -140px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.85rem;
+      line-height: 1.3;
+    }
+    .tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+    .footer-text {
+      font-size: 0.9rem;
+      color: #1e40af;
+      font-weight: 600;
+      text-align: center;
+    }
+    .footer-text a {
+      color: #1e40af;
+      text-decoration: none;
+    }
+    .footer-text a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <a href="https://justinverstijnen.nl" target="_blank" rel="noopener noreferrer" class="logo-link">
     <img src="https://justinverstijnen.nl/wp-content/uploads/2025/04/cropped-Logo-2.0-Transparant.png" alt="Justin Verstijnen Logo" class="logo" />
   </a>
-        ${resultDiv.innerHTML}
-      </div>
-      <p>Result generated with Subnet Calculator</p>
-    </body>
-    </html>
+  <div class="result">
+    ${resultDiv.innerHTML}
+  </div>
+  <p class="footer-text">
+    Result generated with <a href="https://justinverstijnen.nl" target="_blank" rel="noopener noreferrer">Subnet Calculator</a>
+  </p>
+</body>
+</html>
   `;
 
   const blob = new Blob([htmlContent], {type: "text/html"});
