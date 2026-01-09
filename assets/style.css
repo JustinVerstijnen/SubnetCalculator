@@ -254,3 +254,24 @@ th:first-child{white-space:nowrap;}
 .ref-details[open] > summary{border-bottom-left-radius:0;border-bottom-right-radius:0;}
 .ref-details .reference-table{margin-top:0;border-top-left-radius:0;border-top-right-radius:0;}
 .ref-details:not([open]) .reference-table{display:none;}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("https://justinverstijnen.nl/wp-content/uploads/2026/01/Tool_Background_Blurred.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.69;
+    z-index: -1;
+}
+
+body {
+    position: relative;
+    min-height: 100vh;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.85);
+}
